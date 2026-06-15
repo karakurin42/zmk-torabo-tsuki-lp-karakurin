@@ -38,6 +38,7 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 #include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 /* --- オートマウス発動条件の調整(打鍵直後の待ち時間を短縮) --- */
 &zip_temp_layer {
@@ -46,8 +47,10 @@
 
 /* --- トラックボールのリスナーに input processor を追加 --- */
 &pointing_listener {
-    /* 動かす -> layer 1(クリック層)を一時有効化、2秒無操作で解除 */
-    input-processors = <&zip_temp_layer 1 2000>;
+    /* 動かす -> layer 1(クリック層)を一時有効化、2秒無操作で解除
+     * 先頭に zip_xy_transform(X|Y INVERT) を復活 = sekigon board overlay のトラボ向き補正。
+     * これを入れないと生センサ向き=上下左右とも反転する(2026-06-16 修正)。 */
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT) &zip_temp_layer 1 2000>;
 
     /* layer 4 が有効な間はボールをスクロールに変換 */
     scroller {
