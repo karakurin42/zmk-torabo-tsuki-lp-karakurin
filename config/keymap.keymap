@@ -10,9 +10,11 @@
  * デフォルトからの確定変更点:
  *   1. オートマウスレイヤー(layer 1)をトラックボール移動で自動発動
  *   2. スクロール層(layer 4)を追加し、ボールをホイール代替に
- *   3. 重複していた中央内側の Space/Enter を転用
- *        - 中央左 Space -> &mo 4     (押している間スクロール)
- *        - 中央右 Enter -> &mkp LCLK (確実な左クリック)
+ *   3. 中央キーを転用【M実機の物理中央キー = 下段(B/Nの段, RC(3,6)/RC(3,13))】
+ *        - 中央左 (旧Space) -> &mo 4     (押している間スクロール)
+ *        - 中央右 (旧Enter) -> &mkp LCLK (確実な左クリック)
+ *      ※ホーム行(G/Hの段)の中央は M に物理キーが無く押せない=触らない。
+ *        Space/Enter は親指(lt2/lt3 タップ)に存在するので失わない。
  *   4. require-prior-idle-ms を 150 に短縮(打鍵直後でもAMLが出やすく)
  *   5. 欠落キー(右親指 BkSp / RAlt / RGUI)を &none に
  *   6. 右端 RCtrl×2 -> 内=Del / 外=Ctrl
@@ -88,7 +90,7 @@
 &kp ESC    &kp N1     &kp N2    &kp N3    &kp N4    &kp N5                                                          &kp N6       &kp N7    &kp N8     &kp N9    &kp N0                &kp BSPC
 &kp TAB    &kp Q      &kp W     &kp E     &kp R     &kp T                                                           &kp Y        &kp U     &kp I      &kp O     &kp P                 &kp BSPC
 &kp CAPS   &kp A      &kp S     &kp D     &kp F     &kp G        &mo 4                       &mkp LCLK              &kp H        &kp J     &kp K      &kp L     &kp SEMI              &kp SQT
-&kp LSHFT  &kp Z      &kp X     &kp C     &kp V     &kp B        &kp SPACE                   &kp RET               &kp N        &kp M     &kp COMMA  &kp DOT   &mt RIGHT_SHIFT FSLH  &kp RSHFT
+&kp LSHFT  &kp Z      &kp X     &kp C     &kp V     &kp B        &mo 4                       &mkp LCLK             &kp N        &kp M     &kp COMMA  &kp DOT   &mt RIGHT_SHIFT FSLH  &kp RSHFT
 &kp LCTRL  &kp LCTRL  &kp LGUI  &kp LALT  &kp BSPC  &lt 2 SPACE  &mt LEFT_SHIFT LANGUAGE_2   &mt RSHIFT LANGUAGE_1  &lt 3 ENTER  &none     &none      &none     &kp DEL               &kp RCTRL
             >;
         };
