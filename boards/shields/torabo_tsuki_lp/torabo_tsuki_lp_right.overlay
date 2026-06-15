@@ -3,7 +3,9 @@
 #include <dt-bindings/zmk/input_transform.h>
 
 &pointing_listener {
-    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+    /* karakurin 2026-06-16: 実機(右トラボ)で上下左右とも逆だったため、上流デフォルトの
+       X_INVERT|Y_INVERT を解除して無変換(0)に。central=右(right_central)で有効な側。 */
+    input-processors = <&zip_xy_transform 0>;
 };
 
 &size_s_transform {
