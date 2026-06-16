@@ -76,8 +76,7 @@
 <rect x="647.0" y="180.5" width="46.0" height="46.0" rx="5" fill="#0b3b2e" stroke="#34d399" stroke-width="1"/>
 <text x="670.0" y="207.5" fill="#ecfdf5" font-size="11" text-anchor="middle">.</text>
 <rect x="693.0" y="196.6" width="46.0" height="46.0" rx="5" fill="#0b3b2e" stroke="#34d399" stroke-width="1"/>
-<text x="716.0" y="218.6" fill="#ecfdf5" font-size="11" text-anchor="middle">/</text>
-<text x="716.0" y="237.6" fill="#fcd34d" font-size="7" text-anchor="middle">⇧h</text>
+<text x="716.0" y="223.6" fill="#ecfdf5" font-size="11" text-anchor="middle">/</text>
 <rect x="739.0" y="196.6" width="46.0" height="46.0" rx="5" fill="#0b3b2e" stroke="#34d399" stroke-width="1"/>
 <text x="762.0" y="223.6" fill="#ecfdf5" font-size="9" text-anchor="middle">Shift</text>
 <rect x="26.0" y="242.6" width="46.0" height="46.0" rx="5" fill="#0b3b2e" stroke="#34d399" stroke-width="1"/>
