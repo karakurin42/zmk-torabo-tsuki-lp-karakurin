@@ -42,17 +42,25 @@
 #include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 
-/* --- オートマウス発動条件の調整(打鍵直後の待ち時間を短縮) --- */
+/* --- オートマウス発動条件の調整 ---
+ * 打鍵の振動でボールが微動 -> AML誤発動 -> 次のk/jがクリック化、を防ぐ。
+ * require-prior-idle-ms = 直前の打鍵からこの時間内はAMLを出さない(タイピング保護ガード)。
+ * 150 は短すぎて打鍵直後の振動で即発動していた -> 350 に延長(2026-06-16 修正)。
+ *   ・打鍵中はAMLが出ない(誤クリック消滅)
+ *   ・クリックしたいときは指を一瞬止めてからボールを動かせばAMLが出る
+ *   ・まだ誤発動するなら 400-500 へ、AMLが出づらすぎるなら 250 へ微調整。 */
 &zip_temp_layer {
-    require-prior-idle-ms = <150>;
+    require-prior-idle-ms = <350>;
 };
 
 /* --- トラックボールのリスナーに input processor を追加 --- */
 &pointing_listener {
     /* 動かす -> layer 1(クリック層)を一時有効化、2秒無操作で解除
      * 先頭に zip_xy_transform(X|Y INVERT) を復活 = sekigon board overlay のトラボ向き補正。
-     * これを入れないと生センサ向き=上下左右とも反転する(2026-06-16 修正)。 */
-    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT) &zip_temp_layer 1 2000>;
+     * これを入れないと生センサ向き=上下左右とも反転する(2026-06-16 修正)。
+     * 末尾の 800 = AML保持ms。ボール停止後この時間で通常層へ復帰。
+     * 2000 は長すぎて「動かした後しばらくk/jがクリックのまま」だったため 800 に短縮(2026-06-16)。 */
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT) &zip_temp_layer 1 800>;
 
     /* layer 4 が有効な間はボールをスクロールに変換 */
     scroller {
