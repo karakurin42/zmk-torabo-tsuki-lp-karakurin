@@ -2,10 +2,12 @@
  * torabo-tsuki LP (M) 確定版キーマップ
  * 構成: 左トラボなし / 右トラボ
  *
- * 物理レイアウト前提(超重要):
- *   右トラックボール搭載により、右親指の BkSp・RAlt・RGUI が物理的に消滅する。
- *   右端の RCtrl は2キーとも残存。左親指クラスターは無傷。
- *   → 消滅した3キーは &none にしてある(誤割り当て防止)。
+ * 物理レイアウト前提(超重要・2026-06-18 実機で訂正):
+ *   右トラックボールが潰すのは右親指 BkSp・RAlt の【2キーのみ】。
+ *   トラボはLの列までは来ない。【RGUI は物理キーが生きている】(Enterの右3つ目,
+ *   Del/Ctrlの隣)。右端の RCtrl は2キーとも残存。左親指クラスターは無傷。
+ *   → 消滅2キー(BkSp/RAlt)のみ &none。空いていた RGUI 位置は Paste に転用。
+ *   (旧版は誤って RGUI も &none = 3キー欠落としていた。実機は2キー欠落)。
  *
  * デフォルトからの確定変更点:
  *   1. オートマウスレイヤー(layer 1)をトラックボール移動で自動発動
@@ -15,15 +17,39 @@
  *        - 中央右 (旧Enter) -> &mkp LCLK (確実な左クリック)
  *      ※ホーム行(G/Hの段)の中央は M に物理キーが無く押せない=触らない。
  *        Space/Enter は親指(lt2/lt3 タップ)に存在するので失わない。
- *   4. require-prior-idle-ms を 150 に短縮(打鍵直後でもAMLが出やすく)
- *   5. 欠落キー(右親指 BkSp / RAlt / RGUI)を &none に
- *   6. 右端 RCtrl×2 -> 内=Del / 外=Ctrl
+ *   4. require-prior-idle-ms = 350(打鍵直後の振動でAML誤発動を抑制。下の調整メモ参照)
+ *   5. 欠落キー(右親指 BkSp / RAlt)を &none に(RGUIは生きてるので除外)
+ *   6. 生存した RGUI位置キー -> &kp DEL(消えた右BkSpの消去機能を補完)
+ *   7. 右端 RCtrl×2 -> 内=Paste(LC V) / 外=Ctrl(左Copyと左右対称・後述)
+ *   8. ワンタッチ・コピペ(2026-06-17 / 2026-06-18 左右対称で確定):
+ *        - 左親指の LCtrl×2 のうち外側だけ残す(左Ctrlは1つ確保)
+ *        - 左Ctrlの内側(重複LCtrl) -> &kp LC(C) (Copy = Ctrl+C)
+ *        - 右Ctrlの内側 -> &kp LC(V) (Paste = Ctrl+V)
+ *        => 外=Ctrl / 内=コピペ が左右対称。左親指 BkSp は【死守=残す】。
+ *        ★OS注意: LC(C)/LC(V)=Ctrl+C/V。自宅Win/Linuxでは動くが、Macは
+ *          コピペがCmd+C/Vのため効かない。Mac利用時は従来どおりCmd手押し。
+ *          将来MacもワンタッチにするならOSトグル(Macモード)を別途追加。
+ *   9. 戻る/進む(2026-06-17 / 2026-06-18 配置訂正): Layer 1(オートマウス層)の
+ *        クリックの【上の段】に左右対称で配置。左 E=戻る(MB4)/R=進む(MB5)、
+ *        右 U=戻る(MB4)/I=進む(MB5)。クリック(D/F・J/K)の真上=指の延長で押せる。
+ *        MB4/MB5はOS非依存(ブラウザ・ファイラ両対応。一部アプリ非対応)。
  *
  * IME / Shift 方針(2026-06-14 確定):
  *   - IME を標準配置に入れ替え: 左=英数(LANGUAGE_2) / 右=かな(LANGUAGE_1)
  *       (Mac物理JIS標準=スペース左が英数・右がかな に一致)
  *   - IMEキーの mod-tap(タップ=IME / 長押し=Shift)は維持(Shift現状維持方針)
  *   - ホームロウMod は初号機が手に馴染んでから別途検討(今回は導入しない)
+ *
+ * Shift はどこ? (図に "Shift押下時" 参照を追加・README表も参照):
+ *   Shift キーは4箇所。
+ *     1. 左下段 外側 LSHFT (Z段の左端)
+ *     2. 右下段 外側 RSHFT (/段の右端)
+ *     3. 左親指 英数キー長押し (mt LEFT_SHIFT LANGUAGE_2 = タップ英数/長押しShift)
+ *     4. 右親指 かなキー長押し (mt RSHIFT LANGUAGE_1 = タップかな/長押しShift)
+ *   Shift押下中の出力は OS のキーボード配列に従う。本機は US 配列前提
+ *   (記号層 layer 2 が LS(N2)=@ 等 US 刻印で組んであるため)。主な US シフト:
+ *     1!  2@  3#  4$  5%  6^  7&  8*  9(  0)   ;:  '"  ,<  .>  /?
+ *   英字は Shift で大文字。JIS 配列の OS で使うとシフト記号がズレる点に注意。
  *
  * キーコード注意:
  *   LANGUAGE_1 = かな, LANGUAGE_2 = 英数(Mac。最近のWindowsもLANG1/2でIME ON/OFF可)
@@ -96,7 +122,10 @@
          * 親指メイン:
          *   左 = lt2/SPACE ・ 英数(mt LSHIFT LANGUAGE_2)
          *   右 = かな(mt RSHIFT LANGUAGE_1) ・ lt3/ENTER
-         * 右親指 BkSp/RAlt/RGUI は欠落 -> &none / 右端 内=Del・外=Ctrl
+         * 左親指列(外->内): Ctrl ・ Copy(LC C) ・ GUI ・ Alt ・ BkSp ・ lt2/SPACE
+         *   ※左Ctrlは1つ残す。左親指BkSpは死守。Copy=左 / Paste=右親指空きキー
+         * 右親指(内->外): BkSp/RAlt=トラボ欠落&none / RGUI位置=Del / 右Ctrl内=Paste(LC V) / 外=Ctrl
+         *   ※Copy/PasteはWin/Linux用(Macは効かない=上部コメント参照)
          */
         layer_0 {
             bindings = <
@@ -104,18 +133,21 @@
 &kp TAB    &kp Q      &kp W     &kp E     &kp R     &kp T                                                           &kp Y        &kp U     &kp I      &kp O     &kp P                 &kp BSPC
 &kp CAPS   &kp A      &kp S     &kp D     &kp F     &kp G        &mo 4                       &mkp LCLK              &kp H        &kp J     &kp K      &kp L     &kp SEMI              &kp SQT
 &kp LSHFT  &kp Z      &kp X     &kp C     &kp V     &kp B        &mo 4                       &mkp LCLK             &kp N        &kp M     &kp COMMA  &kp DOT   &kp FSLH              &kp RSHFT
-&kp LCTRL  &kp LCTRL  &kp LGUI  &kp LALT  &kp BSPC  &lt 2 SPACE  &mt LEFT_SHIFT LANGUAGE_2   &mt RSHIFT LANGUAGE_1  &lt 3 ENTER  &none     &none      &none     &kp DEL               &kp RCTRL
+&kp LCTRL  &kp LC(C)  &kp LGUI  &kp LALT  &kp BSPC   &lt 2 SPACE  &mt LEFT_SHIFT LANGUAGE_2   &mt RSHIFT LANGUAGE_1  &lt 3 ENTER  &none     &none      &kp DEL    &kp LC(V)             &kp RCTRL
             >;
         };
 
-        /* ============ Layer 1: オートマウス(クリック) ============ */
+        /* ============ Layer 1: オートマウス(クリック) ============
+         * ボール移動で自動発動。クリック: 左 D=右ｸﾘｯｸ/F=左ｸﾘｯｸ、右 J=左ｸﾘｯｸ/K=右ｸﾘｯｸ。
+         * 戻る/進むはクリックの【上の段】に左右対称: 左 E=戻る/R=進む、右 U=戻る/I=進む。
+         */
         layer_1 {
             bindings = <
 &trans  &trans  &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
-&trans  &trans  &trans  &trans     &trans     &trans                  &trans  &trans     &trans     &trans  &trans  &trans
+&trans  &trans  &trans  &mkp MB4   &mkp MB5   &trans                  &trans  &mkp MB4   &mkp MB5   &trans  &trans  &trans
 &trans  &trans  &trans  &mkp RCLK  &mkp LCLK  &trans  &trans  &trans  &trans  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans
 &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans
-&trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans  &trans  &none      &none      &none   &trans  &trans
+&trans  &trans  &trans  &trans     &trans     &trans  &trans  &trans  &trans  &none      &none      &trans  &trans  &trans
             >;
         };
 
@@ -126,7 +158,7 @@
 &trans  &kp LS(NUMBER_1)  &kp LS(NUMBER_2)  &kp LS(N3)  &kp LS(N4)  &kp LS(N5)                  &kp LS(N6)      &kp LS(N7)     &kp LS(N8)        &kp LS(N9)         &kp LS(N0)     &trans
 &trans  &kp N1            &kp N2            &kp N3      &kp N4      &kp N5      &trans  &trans  &kp LEFT_BRACE  &kp MINUS      &kp EQUAL         &kp RIGHT_BRACE    &kp COLON      &trans
 &trans  &kp N6            &kp N7            &kp N8      &kp N9      &kp N0      &trans  &trans  &kp LS(MINUS)   &kp LS(EQUAL)  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &trans
-&trans  &trans            &trans            &trans      &trans      &trans      &trans  &trans  &kp TAB         &none          &none             &none              &kp DEL        &trans
+&trans  &trans            &trans            &trans      &trans      &trans      &trans  &trans  &kp TAB         &none          &none             &trans             &trans         &trans
             >;
         };
 
@@ -137,7 +169,7 @@
 &trans  &kp F1   &kp F2   &kp F3        &kp F4        &kp F5                      &kp HOME          &kp PG_UP  &kp PAGE_DOWN  &kp END    &kp ESCAPE  &trans
 &trans  &kp F6   &kp F7   &kp F8        &kp F9        &kp F10     &trans  &trans  &kp LEFT          &kp DOWN   &kp UP_ARROW   &kp RIGHT  &kp TAB     &trans
 &trans  &kp F11  &kp F12  &out OUT_USB  &out OUT_BLE  &bt BT_NXT  &trans  &trans  &kp SINGLE_QUOTE  &kp DQT    &kp GRAVE      &kp TILDE  &kp PIPE    &trans
-&trans  &trans   &trans   &trans        &kp DELETE    &kp TAB     &trans  &trans  &trans            &none      &none          &none      &trans      &trans
+&trans  &trans   &trans   &trans        &kp DELETE    &kp TAB     &trans  &trans  &trans            &none      &none          &trans     &trans      &trans
             >;
         };
 
@@ -150,7 +182,7 @@
 &trans  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &none   &none   &none   &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &none   &none   &trans  &trans  &trans
             >;
         };
     };
